@@ -4,7 +4,7 @@ import 'package:countdown_flutter/utils.dart';
 import 'package:flutter/material.dart';
 
 class Countdown extends StatefulWidget {
-  const Countdown({
+  Countdown({
     Key key,
     @required this.duration,
     @required this.builder,
@@ -16,8 +16,22 @@ class Countdown extends StatefulWidget {
   final Duration interval;
   final void Function() onFinish;
   final Widget Function(BuildContext context, Duration remaining) builder;
+
+  final _CountdownState _countdownState = _CountdownState();
   @override
-  _CountdownState createState() => _CountdownState();
+  _CountdownState createState() => _countdownState;
+
+  void reset() {
+    _countdownState.reset();
+  }
+
+  void pause() {
+    _countdownState.pause();
+  }
+
+  void resume() {
+    _countdownState.resume();
+  }
 }
 
 class _CountdownState extends State<Countdown> {
@@ -29,6 +43,23 @@ class _CountdownState extends State<Countdown> {
     startTimer();
 
     super.initState();
+  }
+
+  void reset() {
+    setState(() {
+      _duration = widget.duration;
+    });
+    _timer?.cancel();
+    startTimer();
+  }
+
+  void pause() {
+    if (_timer?.isActive == true) setState(() => _timer?.cancel());
+  }
+
+  void resume() {
+    if (_timer?.isActive == true) _timer?.cancel();
+    startTimer();
   }
 
   @override
@@ -58,8 +89,8 @@ class _CountdownState extends State<Countdown> {
   }
 }
 
-class CountdownFormatted extends StatelessWidget {
-  const CountdownFormatted({
+class CountdownFormatted extends StatefulWidget {
+  CountdownFormatted({
     Key key,
     @required this.duration,
     @required this.builder,
@@ -77,23 +108,63 @@ class CountdownFormatted extends StatelessWidget {
 
   final Widget Function(BuildContext context, String remaining) builder;
 
+  final _CountdownFormattedState _countdownFormattedState =
+      _CountdownFormattedState();
+  @override
+  _CountdownFormattedState createState() => _countdownFormattedState;
+
+  void reset() {
+    _countdownFormattedState.reset();
+  }
+
+  void pause() {
+    _countdownFormattedState.pause();
+  }
+
+  void resume() {
+    _countdownFormattedState.resume();
+  }
+}
+
+class _CountdownFormattedState extends State<CountdownFormatted> {
   Function(Duration) _formatter() {
-    if (formatter != null) return formatter;
-    if (duration.inHours >= 1) return formatByHours;
-    if (duration.inMinutes >= 1) return formatByMinutes;
+    if (widget.formatter != null) return widget.formatter;
+    if (widget.duration.inHours >= 1) return formatByHours;
+    if (widget.duration.inMinutes >= 1) return formatByMinutes;
 
     return formatBySeconds;
   }
 
+  void reset() {
+    _countdown.reset();
+  }
+
+  void pause() {
+    _countdown.pause();
+  }
+
+  void resume() {
+    _countdown.resume();
+  }
+
+  Countdown _countdown;
+
   @override
-  Widget build(BuildContext context) {
-    return Countdown(
-      interval: interval,
-      onFinish: onFinish,
-      duration: duration,
+  void initState() {
+    super.initState();
+    _countdown = Countdown(
+      key: widget.key,
+      interval: widget.interval,
+      onFinish: widget.onFinish,
+      duration: widget.duration,
       builder: (BuildContext ctx, Duration remaining) {
-        return builder(ctx, _formatter()(remaining));
+        return widget.builder(ctx, _formatter()(remaining));
       },
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _countdown;
   }
 }

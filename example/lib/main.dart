@@ -10,10 +10,47 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var _done = false;
+  //Assign countdown to widgets
+  Countdown _countdown;
+  CountdownFormatted _countdownFormatted;
+
+  var _countdownDone = false;
+  var _countdownFormattedDone = false;
+
   @override
   void initState() {
     super.initState();
+
+    //Initialize Generic Widget
+    _countdown = Countdown(
+      duration: Duration(seconds: 10),
+      onFinish: () {
+        setState(() {
+          _countdownDone = true;
+        });
+        print('finished!');
+      },
+      builder: (BuildContext ctx, Duration remaining) {
+        return Text('${remaining.inMinutes}:${remaining.inSeconds}');
+      },
+    );
+
+    //Initialize Formatted Widget
+    _countdownFormatted = CountdownFormatted(
+      duration: Duration(hours: 1),
+      onFinish: () {
+        setState(() {
+          _countdownFormattedDone = true;
+        });
+        print('finished!');
+      },
+      builder: (BuildContext ctx, String remaining) {
+        return Text(
+          remaining,
+          style: TextStyle(fontSize: 30),
+        ); // 01:00:00
+      },
+    );
   }
 
   @override
@@ -22,23 +59,83 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text(_done ? 'Finished!' : 'Counting...'),
+          title: Text('App'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Center(
-              child: CountdownFormatted(
-                duration: Duration(hours: 2),
-                builder: (BuildContext ctx, String remaining) {
-                  return Text(
-                    remaining,
-                    style: TextStyle(fontSize: 30),
-                  ); // 01:00:00
-                },
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.spaceEvenly,
+            runAlignment: WrapAlignment.center,
+            children: [
+              //Generic
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _countdown,
+                  RaisedButton(
+                    onPressed: () {
+                      _countdown.reset();
+                      if (_countdownDone) {
+                        setState(() => _countdownDone = false);
+                      }
+                    },
+                    child: Text('Reset'),
+                  ),
+                  RaisedButton(
+                    onPressed: _countdown.resume,
+                    child: Text('Resume'),
+                  ),
+                  RaisedButton(
+                    onPressed: _countdown.pause,
+                    child: Text('Pause'),
+                  ),
+                  Text(
+                    _countdownDone ? 'Finished!' : 'Counting...',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(fontSize: 20),
+                  ),
+                ],
               ),
-            ),
-          ],
+
+              //Formatted
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _countdownFormatted,
+                  RaisedButton(
+                    onPressed: () {
+                      _countdownFormatted.reset();
+                      if (_countdownFormattedDone) {
+                        setState(() => _countdownFormattedDone = false);
+                      }
+                    },
+                    child: Text('Reset'),
+                  ),
+                  RaisedButton(
+                    onPressed: _countdownFormatted.resume,
+                    child: Text('Resume'),
+                  ),
+                  RaisedButton(
+                    onPressed: _countdownFormatted.pause,
+                    child: Text('Pause'),
+                  ),
+                  Text(
+                    _countdownFormattedDone ? 'Finished!' : 'Counting...',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(fontSize: 20),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
