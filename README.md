@@ -18,7 +18,7 @@ samples, guidance on mobile development, and a full API reference.
 
 ### Installation (pubspec.yaml)
 ``` yaml
-  flutter-countdown:
+  countdown_flutter:
     git:
       url: https://github.com/lukeidex/flutter-countdown.git
 ```
