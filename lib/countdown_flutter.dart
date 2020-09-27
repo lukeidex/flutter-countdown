@@ -21,8 +21,8 @@ class Countdown extends StatefulWidget {
   @override
   _CountdownState createState() => _countdownState;
 
-  void reset() {
-    _countdownState.reset();
+  void reset([Duration overrideDuration]) {
+    _countdownState.reset(overrideDuration);
   }
 
   void pause() {
@@ -45,9 +45,9 @@ class _CountdownState extends State<Countdown> {
     super.initState();
   }
 
-  void reset() {
+  void reset([Duration overrideDuration]) {
     setState(() {
-      _duration = widget.duration;
+      _duration = overrideDuration ?? widget.duration;
     });
     _timer?.cancel();
     startTimer();
@@ -113,8 +113,8 @@ class CountdownFormatted extends StatefulWidget {
   @override
   _CountdownFormattedState createState() => _countdownFormattedState;
 
-  void reset() {
-    _countdownFormattedState.reset();
+  void reset([Duration overrideDuration]) {
+    _countdownFormattedState.reset(overrideDuration);
   }
 
   void pause() {
@@ -135,8 +135,8 @@ class _CountdownFormattedState extends State<CountdownFormatted> {
     return formatBySeconds;
   }
 
-  void reset() {
-    _countdown.reset();
+  void reset([Duration overrideDuration]) {
+    _countdown.reset(overrideDuration);
   }
 
   void pause() {

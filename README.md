@@ -103,8 +103,8 @@ class Foo extends StatelessWidget {
         children: [
           countdownFormatted,
           RaisedButton(
-            onPressed: countdownFormatted.reset,
-            child: Text('Reset'),
+            onPressed: () => countdownFormatted.reset(Duration(seconds: 5)),
+            child: Text('Reset (Override duration to 5 seconds)'),
           ),
           RaisedButton(
             onPressed: countdownFormatted.resume,

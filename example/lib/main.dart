@@ -110,12 +110,12 @@ class _MyAppState extends State<MyApp> {
                   _countdownFormatted,
                   RaisedButton(
                     onPressed: () {
-                      _countdownFormatted.reset();
+                      _countdownFormatted.reset(Duration(seconds: 5));
                       if (_countdownFormattedDone) {
                         setState(() => _countdownFormattedDone = false);
                       }
                     },
-                    child: Text('Reset'),
+                    child: Text('Reset (Override duration to 5 seconds)'),
                   ),
                   RaisedButton(
                     onPressed: _countdownFormatted.resume,
